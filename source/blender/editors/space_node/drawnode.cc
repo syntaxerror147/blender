@@ -1475,6 +1475,7 @@ static void std_node_socket_interface_draw(ID *id,
     case SOCK_SHADER:
     case SOCK_GEOMETRY:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_BUNDLE:
     case SOCK_CLOSURE:
       break;

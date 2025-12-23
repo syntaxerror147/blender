@@ -499,6 +499,44 @@ bNodeSocket &Matrix::update_or_build(bNodeTree &ntree, bNode &node, bNodeSocket 
 /** \} */
 
 /* -------------------------------------------------------------------- */
+/** \name #DMatrix
+ * \{ */
+
+bNodeSocket &DMatrix::build(bNodeTree &ntree, bNode &node) const
+{
+  bNodeSocket &socket = *bke::node_add_static_socket(ntree,
+                                                     node,
+                                                     this->in_out,
+                                                     SOCK_DMATRIX,
+                                                     PROP_NONE,
+                                                     this->identifier.c_str(),
+                                                     this->name.c_str());
+  this->set_common_flags(socket);
+  return socket;
+}
+
+bool DMatrix::matches(const bNodeSocket &socket) const
+{
+  if (!this->matches_common_data(socket)) {
+    return false;
+  }
+  if (socket.type != SOCK_DMATRIX) {
+    return false;
+  }
+  return true;
+}
+
+bool DMatrix::can_connect(const bNodeSocket &socket) const
+{
+  if (!sockets_can_connect(*this, socket)) {
+    return false;
+  }
+  return socket.type == SOCK_DMATRIX;
+}
+
+/** \} */
+
+/* -------------------------------------------------------------------- */
 /** \name #String
  * \{ */
 

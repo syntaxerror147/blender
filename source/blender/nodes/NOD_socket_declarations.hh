@@ -198,6 +198,23 @@ class Matrix : public SocketDeclaration {
 
 class MatrixBuilder : public SocketDeclarationBuilder<Matrix> {};
 
+class DMatrixBuilder;
+
+class DMatrix : public SocketDeclaration {
+ public:
+  static constexpr eNodeSocketDatatype static_socket_type = SOCK_DMATRIX;
+
+  friend DMatrixBuilder;
+
+  using Builder = DMatrixBuilder;
+
+  bNodeSocket &build(bNodeTree &ntree, bNode &node) const override;
+  bool matches(const bNodeSocket &socket) const override;
+  bool can_connect(const bNodeSocket &socket) const override;
+};
+
+class DMatrixBuilder : public SocketDeclarationBuilder<DMatrix> {};
+
 class StringBuilder;
 
 class String : public SocketDeclaration {

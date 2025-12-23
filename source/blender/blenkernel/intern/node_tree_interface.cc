@@ -414,6 +414,14 @@ inline void socket_data_write_impl(BlendWriter *writer, bNodeSocketValueMenu &da
 {
   writer->write_struct(&data);
 }
+inline void socket_data_write_impl(BlendWriter *writer, bNodeSocketValueDMatrix &data)
+{
+  writer->write_struct(&data);
+  if (data.data && data.rows > 0 && data.cols > 0) {
+    const int data_size = data.rows * data.cols;
+    BLO_write_float_array(writer, data_size, data.data);
+  }
+}
 
 static void socket_data_write(BlendWriter *writer, bNodeTreeInterfaceSocket &socket)
 {
@@ -443,6 +451,17 @@ template<> void socket_data_read_data_impl(BlendDataReader *reader, bNodeSocketV
   /* Clear runtime data. */
   (*data)->enum_items = nullptr;
   (*data)->runtime_flag = 0;
+}
+template<> void socket_data_read_data_impl(BlendDataReader *reader, bNodeSocketValueDMatrix **data)
+{
+  BLO_read_data_address(reader, data);
+  if (*data && (*data)->rows > 0 && (*data)->cols > 0) {
+    const int data_size = (*data)->rows * (*data)->cols;
+    BLO_read_float_array(reader, data_size, &(*data)->data);
+  }
+  else if (*data) {
+    (*data)->data = nullptr;
+  }
 }
 
 static void socket_data_read_data(BlendDataReader *reader, bNodeTreeInterfaceSocket &socket)
@@ -537,6 +556,10 @@ template<> StringRefNull socket_type_from_data_impl(const bNodeSocketValueSound 
 template<> StringRefNull socket_type_from_data_impl(const bNodeSocketValueMenu & /*data*/)
 {
   return *bke::node_static_socket_type(SOCK_MENU, PROP_NONE);
+}
+template<> StringRefNull socket_type_from_data_impl(const bNodeSocketValueDMatrix & /*data*/)
+{
+  return *bke::node_static_socket_type(SOCK_DMATRIX, PROP_NONE);
 }
 
 static StringRefNull socket_type_from_data(const bNodeTreeInterfaceSocket &socket)

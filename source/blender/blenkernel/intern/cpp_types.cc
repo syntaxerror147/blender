@@ -18,6 +18,7 @@
 #include "NOD_menu_value.hh"
 
 #include "DNA_meshdata_types.h"
+#include "DNA_node_types.h"
 
 struct Tex;
 struct Image;
@@ -39,6 +40,7 @@ BLI_CPP_TYPE_MAKE(Scene *, CPPTypeFlags::BasicType)
 BLI_CPP_TYPE_MAKE(Text *, CPPTypeFlags::BasicType)
 BLI_CPP_TYPE_MAKE(Mask *, CPPTypeFlags::BasicType)
 BLI_CPP_TYPE_MAKE(bSound *, CPPTypeFlags::BasicType)
+BLI_CPP_TYPE_MAKE(bNodeSocketValueDMatrix *, CPPTypeFlags::BasicType)
 
 BLI_CPP_TYPE_MAKE(MStringProperty, CPPTypeFlags::None);
 BLI_CPP_TYPE_MAKE(blender::nodes::MenuValue,
@@ -73,6 +75,7 @@ void BKE_cpp_types_init()
   BLI_CPP_TYPE_REGISTER(Text *);
   BLI_CPP_TYPE_REGISTER(Mask *);
   BLI_CPP_TYPE_REGISTER(bSound *);
+  BLI_CPP_TYPE_REGISTER(bNodeSocketValueDMatrix *);
 
   BLI_CPP_TYPE_REGISTER(MStringProperty);
   BLI_CPP_TYPE_REGISTER(blender::nodes::MenuValue);

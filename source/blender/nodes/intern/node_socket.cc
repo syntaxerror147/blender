@@ -572,6 +572,7 @@ bool socket_type_always_single(const eNodeSocketDatatype socket_type)
     case SOCK_ROTATION:
     case SOCK_MENU:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
       return false;
   }
   return false;
@@ -760,6 +761,15 @@ void node_socket_init_default_value_data(eNodeSocketDatatype datatype, int subty
       *data = dval;
       break;
     }
+    case SOCK_DMATRIX: {
+      bNodeSocketValueDMatrix *dval = MEM_new_for_free<bNodeSocketValueDMatrix>(
+          "node socket value dmatrix");
+      dval->rows = 0;
+      dval->cols = 0;
+      dval->data = nullptr;
+      *data = dval;
+      break;
+    }
 
     case SOCK_CUSTOM:
     case SOCK_GEOMETRY:
@@ -894,6 +904,19 @@ void node_socket_copy_default_value_data(eNodeSocketDatatype datatype, void *to,
       bNodeSocketValueSound *fromval = (bNodeSocketValueSound *)from;
       *toval = *fromval;
       id_us_plus(id_cast<ID *>(toval->value));
+      break;
+    }
+    case SOCK_DMATRIX: {
+      bNodeSocketValueDMatrix *toval = (bNodeSocketValueDMatrix *)to;
+      bNodeSocketValueDMatrix *fromval = (bNodeSocketValueDMatrix *)from;
+      toval->rows = fromval->rows;
+      toval->cols = fromval->cols;
+      if (fromval->data && fromval->rows > 0 && fromval->cols > 0) {
+        toval->data = static_cast<float *>(MEM_dupallocN(fromval->data));
+      }
+      else {
+        toval->data = nullptr;
+      }
       break;
     }
 
@@ -1092,6 +1115,28 @@ static bke::bNodeSocketType *make_socket_type_matrix()
     return SocketValueVariant(float4x4::identity());
   };
   static SocketValueVariant default_value{float4x4::identity()};
+  socktype->geometry_nodes_default_value = &default_value;
+  return socktype;
+}
+
+/* Forward declaration for DMatrix wrapper type */
+namespace blender::nodes {
+class DMatrixValue;
+}
+
+static bke::bNodeSocketType *make_socket_type_dmatrix()
+{
+  bke::bNodeSocketType *socktype = make_standard_socket_type(SOCK_DMATRIX, PROP_NONE);
+  /* For now, we'll use a pointer type. The actual Eigen matrix will be stored separately. */
+  socktype->base_cpp_type = &blender::CPPType::get<bNodeSocketValueDMatrix *>();
+  socktype->get_base_cpp_value = [](const void *socket_value, void *r_value) {
+    *(bNodeSocketValueDMatrix **)r_value = (bNodeSocketValueDMatrix *)socket_value;
+  };
+  socktype->get_geometry_nodes_cpp_value = [](const void * /*socket_value*/) {
+    /* TODO: Convert to proper SocketValueVariant when DMatrix support is added */
+    return SocketValueVariant(0.0f);
+  };
+  static SocketValueVariant default_value{0.0f};
   socktype->geometry_nodes_default_value = &default_value;
   return socktype;
 }
@@ -1460,6 +1505,7 @@ void register_standard_node_socket_types()
   bke::node_register_socket_type(*make_socket_type_rgba());
   bke::node_register_socket_type(*make_socket_type_rotation());
   bke::node_register_socket_type(*make_socket_type_matrix());
+  bke::node_register_socket_type(*make_socket_type_dmatrix());
 
   bke::node_register_socket_type(*make_socket_type_string(PROP_NONE));
   bke::node_register_socket_type(*make_socket_type_string(PROP_FILEPATH));

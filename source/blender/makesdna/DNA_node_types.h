@@ -127,6 +127,7 @@ enum eNodeSocketDatatype {
   SOCK_TEXT_ID = 21,
   SOCK_MASK = 22,
   SOCK_SOUND = 23,
+  SOCK_DMATRIX = 24,
 };
 
 /** Socket shape. */
@@ -2095,6 +2096,12 @@ struct bNodeSocketValueMask {
 
 struct bNodeSocketValueSound {
   struct bSound *value = nullptr;
+};
+
+struct bNodeSocketValueDMatrix {
+  int rows = 0;
+  int cols = 0;
+  float *data = nullptr;
 };
 
 struct bNodeSocketValueMenu {

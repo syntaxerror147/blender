@@ -374,6 +374,7 @@ static void library_foreach_node_socket(bNodeSocket *sock, LibraryForeachIDData 
     case SOCK_BOOLEAN:
     case SOCK_ROTATION:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_INT:
     case SOCK_STRING:
     case SOCK_CUSTOM:
@@ -1089,6 +1090,9 @@ static void write_node_socket_default_value(BlendWriter *writer, const bNodeSock
     case SOCK_MATRIX:
       /* Matrix sockets currently have no default value. */
       break;
+    case SOCK_DMATRIX:
+      writer->write_struct_cast<bNodeSocketValueDMatrix>(sock->default_value);
+      break;
     case SOCK_CUSTOM:
       /* Custom node sockets where default_value is defined use custom properties for storage. */
       break;
@@ -1340,6 +1344,7 @@ static bool is_node_socket_supported(const bNodeSocket *sock)
     case SOCK_ROTATION:
     case SOCK_MENU:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_BUNDLE:
     case SOCK_CLOSURE:
       return true;
@@ -1550,6 +1555,9 @@ static void direct_link_node_socket_default_value(BlendDataReader *reader, bNode
         break;
       case SOCK_MATRIX:
         /* Matrix sockets currently have no default value. */
+      case SOCK_DMATRIX:
+        BLO_read_struct(reader, bNodeSocketValueDMatrix, &sock->default_value);
+        break;
       case SOCK_CUSTOM:
         /* Custom node sockets where default_value is defined use custom properties for storage. */
       case SOCK_SHADER:
@@ -1715,6 +1723,10 @@ static void direct_link_node_socket_default_value(BlendDataReader *reader, bNode
         break;
       case SOCK_MATRIX:
         /* Matrix sockets had no default value. */
+      case SOCK_DMATRIX:
+        /* DMatrix sockets did not exist in older versions. */
+        BLI_assert_unreachable();
+        break;
       case SOCK_CUSTOM:
         /* Custom node sockets where default_value is defined were using custom properties for
          * storage. */
@@ -2829,6 +2841,7 @@ static void socket_id_user_increment(bNodeSocket *sock)
     case SOCK_BOOLEAN:
     case SOCK_ROTATION:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_INT:
     case SOCK_STRING:
     case SOCK_MENU:
@@ -2904,6 +2917,7 @@ static bool socket_id_user_decrement(bNodeSocket *sock)
     case SOCK_BOOLEAN:
     case SOCK_ROTATION:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_INT:
     case SOCK_STRING:
     case SOCK_MENU:
@@ -2962,6 +2976,7 @@ void node_modify_socket_type(bNodeTree &ntree,
         case SOCK_BOOLEAN:
         case SOCK_ROTATION:
         case SOCK_MATRIX:
+        case SOCK_DMATRIX:
         case SOCK_CUSTOM:
         case SOCK_OBJECT:
         case SOCK_IMAGE:
@@ -3081,6 +3096,8 @@ std::optional<StringRefNull> node_static_socket_type(const int type,
       return "NodeSocketRotation";
     case SOCK_MATRIX:
       return "NodeSocketMatrix";
+    case SOCK_DMATRIX:
+      return "NodeSocketDMatrix";
     case SOCK_VECTOR:
       if (!dimensions.has_value() || dimensions.value() == 3) {
         switch (PropertySubType(subtype)) {
@@ -3248,6 +3265,8 @@ std::optional<StringRefNull> node_static_socket_interface_type_new(
       return "NodeTreeInterfaceSocketRotation";
     case SOCK_MATRIX:
       return "NodeTreeInterfaceSocketMatrix";
+    case SOCK_DMATRIX:
+      return "NodeTreeInterfaceSocketDMatrix";
     case SOCK_VECTOR:
       if (!dimensions.has_value() || dimensions.value() == 3) {
         switch (PropertySubType(subtype)) {
@@ -3380,6 +3399,8 @@ std::optional<StringRefNull> node_static_socket_label(const int type, const int 
       return "Rotation";
     case SOCK_MATRIX:
       return "Matrix";
+    case SOCK_DMATRIX:
+      return "DMatrix";
     case SOCK_VECTOR:
       return "Vector";
     case SOCK_RGBA:
@@ -3943,6 +3964,9 @@ static void *socket_value_storage(bNodeSocket &socket)
       return &socket.default_value_typed<bNodeSocketValueMenu>()->value;
     case SOCK_MATRIX:
       /* Matrix sockets currently have no default value. */
+      return nullptr;
+    case SOCK_DMATRIX:
+      /* DMatrix sockets have dynamic data, return nullptr for now. */
       return nullptr;
     case SOCK_STRING:
       /* We don't want do this now! */

@@ -2806,6 +2806,7 @@ static int get_main_socket_priority(const bNodeSocket *socket)
     case SOCK_IMAGE:
     case SOCK_ROTATION:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_GEOMETRY:
     case SOCK_COLLECTION:
     case SOCK_TEXTURE:

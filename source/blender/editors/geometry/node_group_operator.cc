@@ -736,6 +736,7 @@ static std::optional<ID_Type> socket_type_to_id_type(const eNodeSocketDatatype s
     case SOCK_ROTATION:
     case SOCK_MENU:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_BUNDLE:
     case SOCK_CLOSURE:
       return std::nullopt;

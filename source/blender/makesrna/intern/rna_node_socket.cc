@@ -26,6 +26,7 @@ const EnumPropertyItem rna_enum_node_socket_type_items[] = {
     {SOCK_VECTOR, "VECTOR", ICON_NODE_SOCKET_VECTOR, "Vector", ""},
     {SOCK_ROTATION, "ROTATION", ICON_NODE_SOCKET_ROTATION, "Rotation", ""},
     {SOCK_MATRIX, "MATRIX", ICON_NODE_SOCKET_MATRIX, "Matrix", ""},
+    {SOCK_DMATRIX, "DMATRIX", ICON_NODE_SOCKET_MATRIX, "DMatrix", ""},
     {SOCK_STRING, "STRING", ICON_NODE_SOCKET_STRING, "String", ""},
     {SOCK_RGBA, "RGBA", ICON_NODE_SOCKET_RGBA, "RGBA", ""},
     {SOCK_SHADER, "SHADER", ICON_NODE_SOCKET_SHADER, "Shader", ""},
@@ -1360,6 +1361,31 @@ static void rna_def_node_socket_interface_matrix(BlenderRNA *brna, const char *i
   rna_def_node_tree_interface_socket_builtin(srna);
 }
 
+static void rna_def_node_socket_dmatrix(BlenderRNA *brna, const char *identifier)
+{
+  StructRNA *srna;
+
+  srna = RNA_def_struct(brna, identifier, "NodeSocketStandard");
+  RNA_def_struct_ui_text(srna, "DMatrix Node Socket", "Dynamic Matrix value socket of a node");
+  RNA_def_struct_ui_icon(srna, ICON_NODE_SOCKET_MATRIX);
+  RNA_def_struct_sdna(srna, "bNodeSocket");
+
+  RNA_def_struct_sdna_from(srna, "bNodeSocket", nullptr);
+}
+
+static void rna_def_node_socket_interface_dmatrix(BlenderRNA *brna, const char *identifier)
+{
+  StructRNA *srna;
+
+  srna = RNA_def_struct(brna, identifier, "NodeTreeInterfaceSocket");
+  RNA_def_struct_ui_text(srna, "DMatrix Node Socket Interface", "Dynamic Matrix value socket of a node");
+  RNA_def_struct_sdna(srna, "bNodeTreeInterfaceSocket");
+
+  RNA_def_struct_sdna_from(srna, "bNodeTreeInterfaceSocket", nullptr);
+
+  rna_def_node_tree_interface_socket_builtin(srna);
+}
+
 static void rna_def_node_socket_vector(BlenderRNA *brna,
                                        const char *identifier,
                                        PropertySubType subtype,
@@ -2268,6 +2294,7 @@ static const bNodeSocketStaticTypeInfo node_socket_subtypes[] = {
 
     {"NodeSocketRotation", "NodeTreeInterfaceSocketRotation", SOCK_ROTATION, PROP_NONE},
     {"NodeSocketMatrix", "NodeTreeInterfaceSocketMatrix", SOCK_MATRIX, PROP_NONE},
+    {"NodeSocketDMatrix", "NodeTreeInterfaceSocketDMatrix", SOCK_DMATRIX, PROP_NONE},
 
     {"NodeSocketColor", "NodeTreeInterfaceSocketColor", SOCK_RGBA, PROP_NONE},
     {"NodeSocketString", "NodeTreeInterfaceSocketString", SOCK_STRING, PROP_NONE},
@@ -2312,6 +2339,9 @@ static void rna_def_node_socket_subtypes(BlenderRNA *brna)
         break;
       case SOCK_MATRIX:
         rna_def_node_socket_matrix(brna, identifier);
+        break;
+      case SOCK_DMATRIX:
+        rna_def_node_socket_dmatrix(brna, identifier);
         break;
       case SOCK_VECTOR:
         if (blender::StringRef(identifier).endswith("2D")) {
@@ -2408,6 +2438,9 @@ void rna_def_node_socket_interface_subtypes(BlenderRNA *brna)
         break;
       case SOCK_MATRIX:
         rna_def_node_socket_interface_matrix(brna, identifier);
+        break;
+      case SOCK_DMATRIX:
+        rna_def_node_socket_interface_dmatrix(brna, identifier);
         break;
       case SOCK_VECTOR:
         if (blender::StringRef(identifier).endswith("2D")) {

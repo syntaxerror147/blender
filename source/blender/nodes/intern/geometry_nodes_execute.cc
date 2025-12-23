@@ -289,6 +289,7 @@ std::unique_ptr<IDProperty, bke::idprop::IDPropertyDeleter> id_property_create_f
       return id_name_or_value_prop(identifier, id, ID_SO, use_name_for_ids);
     }
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_CUSTOM:
     case SOCK_GEOMETRY:
     case SOCK_SHADER:
@@ -484,6 +485,7 @@ static bool old_id_property_type_matches_socket_convert_to_new(
       return true;
     case SOCK_CUSTOM:
     case SOCK_MATRIX:
+    case SOCK_DMATRIX:
     case SOCK_GEOMETRY:
     case SOCK_SHADER:
     case SOCK_BUNDLE:

@@ -2,6 +2,10 @@
  *
  * SPDX-License-Identifier: GPL-2.0-or-later */
 
+#include "DNA_node_types.h"
+
+#include "MEM_guardedalloc.h"
+
 #include "node_geometry_util.hh"
 
 namespace blender::nodes::node_geo_dmatrix_cc {
@@ -16,26 +20,22 @@ static void node_declare(NodeDeclarationBuilder &b)
       .default_value(1)
       .min(1)
       .description("Number of columns");
-  auto &input = b.add_input<decl::Float>("Value")
-                    .default_value(0.0f)
-                    .description("Input value")
-                    .supports_field();
-  b.add_output<decl::Float>("Output")
-      .description("Output value")
-      .dependent_field({input.index()});
+  b.add_output<decl::DMatrix>("DMatrix")
+      .description("Output DMatrix");
 }
  
 static void node_geo_exec(GeoNodeExecParams params)
 {
-  /* Extract inputs to avoid unused variable warnings */
+  /* Extract inputs */
   const int rows = params.extract_input<int>("Rows");
   const int columns = params.extract_input<int>("Columns");
   (void)rows;
   (void)columns;
   
-  /* Forward the input value (can be a single value or a field) */
-  SocketValueVariant value = params.extract_input<SocketValueVariant>("Value");
-  params.set_output("Output", std::move(value));
+  /* For now, we create a placeholder output. 
+   * Proper DMatrix support in SocketValueVariant needs to be added separately. */
+  /* TODO: Add proper DMatrix support to SocketValueVariant */
+  params.set_output("DMatrix", 0.0f);
 }
 
 static void node_register()
