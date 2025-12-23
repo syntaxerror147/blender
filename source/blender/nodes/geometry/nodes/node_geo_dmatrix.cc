@@ -4,8 +4,8 @@
 
 #include "node_geometry_util.hh"
 
- namespace blender::nodes::node_geo_dmatrix_cc {
- 
+namespace blender::nodes::node_geo_dmatrix_cc {
+
 static void node_declare(NodeDeclarationBuilder &b)
 {
   b.add_input<decl::Int>("Rows")
@@ -37,20 +37,20 @@ static void node_geo_exec(GeoNodeExecParams params)
   SocketValueVariant value = params.extract_input<SocketValueVariant>("Value");
   params.set_output("Output", std::move(value));
 }
- 
- static void node_register()
- {
-   static blender::bke::bNodeType ntype;
- 
-   geo_node_type_base(&ntype, "GeometryNodeDMatrix", GEO_NODE_DMATRIX);
-   ntype.ui_name = "DMatrix";
-   ntype.ui_description = "DMatrix node";
-   ntype.enum_name_legacy = "DMATRIX";
-   ntype.nclass = NODE_CLASS_GEOMETRY;
-   ntype.geometry_node_execute = node_geo_exec;
-   ntype.declare = node_declare;
-   blender::bke::node_register_type(ntype);
- }
- NOD_REGISTER_NODE(node_register)
- 
- }  // namespace blender::nodes::node_geo_dmatrix_cc 
+
+static void node_register()
+{
+  static blender::bke::bNodeType ntype;
+
+  geo_node_type_base(&ntype, "GeometryNodeDMatrix", GEO_NODE_DMATRIX);
+  ntype.ui_name = "DMatrix";
+  ntype.ui_description = "DMatrix node";
+  ntype.enum_name_legacy = "DMATRIX";
+  ntype.nclass = NODE_CLASS_GEOMETRY;
+  ntype.geometry_node_execute = node_geo_exec;
+  ntype.declare = node_declare;
+  blender::bke::node_register_type(ntype);
+}
+NOD_REGISTER_NODE(node_register)
+
+}  // namespace blender::nodes::node_geo_dmatrix_cc
