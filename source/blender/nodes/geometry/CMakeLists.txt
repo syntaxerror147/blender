@@ -74,6 +74,7 @@ set(SRC
   nodes/node_geo_distribute_points_in_grid.cc
   nodes/node_geo_distribute_points_in_volume.cc
   nodes/node_geo_distribute_points_on_faces.cc
+  nodes/node_geo_dmatrix.cc
   nodes/node_geo_dual_mesh.cc
   nodes/node_geo_duplicate_elements.cc
   nodes/node_geo_edge_paths_to_curves.cc

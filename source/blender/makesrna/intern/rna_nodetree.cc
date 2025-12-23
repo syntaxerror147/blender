@@ -10163,6 +10163,7 @@ static void rna_def_nodes(BlenderRNA *brna)
   define("GeometryNode", "GeometryNodeDistributePointsInGrid");
   define("GeometryNode", "GeometryNodeDistributePointsInVolume");
   define("GeometryNode", "GeometryNodeDistributePointsOnFaces", def_geo_distribute_points_on_faces);
+  define("GeometryNode", "GeometryNodeDMatrix");
   define("GeometryNode", "GeometryNodeDualMesh");
   define("GeometryNode", "GeometryNodeDuplicateElements");
   define("GeometryNode", "GeometryNodeEdgePathsToCurves");
