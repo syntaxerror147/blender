@@ -790,6 +790,7 @@ class NODE_MT_gn_utilities_dmatrix_base(node_add_menu.NodeMenu):
     def draw(self, _context):
         layout = self.layout
         self.node_operator(layout, "GeometryNodeDMatrix")
+        self.node_operator(layout, "GeometryNodeSetDMatrixEntry")
 
         self.draw_assets_for_catalog(layout, self.menu_path)
 

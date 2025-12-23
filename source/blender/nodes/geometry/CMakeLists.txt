@@ -240,6 +240,7 @@ set(SRC
   nodes/node_geo_set_mesh_normal.cc
   nodes/node_geo_set_point_radius.cc
   nodes/node_geo_set_position.cc
+  nodes/node_geo_set_dmatrix_entry.cc
   nodes/node_geo_set_shade_smooth.cc
   nodes/node_geo_set_spline_cyclic.cc
   nodes/node_geo_set_spline_resolution.cc

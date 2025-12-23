@@ -998,6 +998,7 @@ static const float std_node_socket_colors[][4] = {
     {0, 0, 0, 1},            /* SOCK_TEXT_ID */
     {0, 0, 0, 1},            /* SOCK_MASK */
     {0, 0, 0, 1},            /* SOCK_SOUND */
+    {0.8, 0.15, 0.3, 1.0}, /* SOCK_DMATRIX */
 };
 
 void std_node_socket_colors_get(int socket_type, float *r_color)
@@ -1037,6 +1038,7 @@ static const SocketColorFn std_node_socket_color_funcs[] = {
     std_node_socket_color_fn<SOCK_CLOSURE>,  std_node_socket_color_fn<SOCK_FONT>,
     std_node_socket_color_fn<SOCK_SCENE>,    std_node_socket_color_fn<SOCK_TEXT_ID>,
     std_node_socket_color_fn<SOCK_MASK>,     std_node_socket_color_fn<SOCK_SOUND>,
+    std_node_socket_color_fn<SOCK_DMATRIX>,
 };
 
 static bool socket_needs_attribute_search(bNode &node, bNodeSocket &socket)
